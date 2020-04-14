@@ -1,0 +1,38 @@
+ServerSignature Off 
+ErrorDocument 401 /error.php?c=401&m=Unauthorized
+ErrorDocument 403 /error.php?c=403&m=Access_Denied
+ErrorDocument 404 /error.php?c=404&m=Not_Found
+ErrorDocument 408 /error.php?c=408&m=Request_Timeout
+ErrorDocument 409 /error.php?c=409&m=Conflict
+ErrorDocument 414 /error.php?c=414&m=Request-URI_Too_Long
+ErrorDocument 429 /error.php?c=429&m=Too_Many_Requests
+ErrorDocument 500 /error.php?c=500&m=Server_Error
+ErrorDocument 502 /error.php?c=502&m=Bad_Gateway
+ErrorDocument 503 /error.php?c=503&m=Service_Unavailable
+ErrorDocument 504 /error.php?c=504&m=Gateway_Timeout
+Options -MultiViews
+# Prevent directory listings
+Options All -Indexes
+# Turn on the rewriting engine - only needed once
+RewriteEngine On
+
+# Prevent viewing of .htaccess file
+<Files .htaccess>
+order allow,deny
+deny from all
+</Files>
+
+
+# Handle Authorization Header
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# Redirect Trailing Slashes If Not A Folder...
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} (.+)/$
+RewriteRule ^ %1 [L,R=301]
+
+# Handle Front Controller...
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [L]
